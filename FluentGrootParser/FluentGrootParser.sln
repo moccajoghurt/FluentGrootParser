@@ -1,0 +1,30 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluentGrootParser", "src\FluentGrootParser\FluentGrootParser.csproj", "{8CF22AE4-1EA7-4DC8-8DB8-4FF9B5853F1E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{D96E3964-9318-489E-B854-63E9590C90E8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{440B0BBF-2644-4135-8592-A7F0DE78C64C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluentGrootParser.Test.Integration", "tests\FluentGrootParser.Test.Integration\FluentGrootParser.Test.Integration.csproj", "{7242BF60-82E6-4FCE-9994-642DFC87B076}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8CF22AE4-1EA7-4DC8-8DB8-4FF9B5853F1E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8CF22AE4-1EA7-4DC8-8DB8-4FF9B5853F1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8CF22AE4-1EA7-4DC8-8DB8-4FF9B5853F1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8CF22AE4-1EA7-4DC8-8DB8-4FF9B5853F1E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7242BF60-82E6-4FCE-9994-642DFC87B076}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7242BF60-82E6-4FCE-9994-642DFC87B076}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7242BF60-82E6-4FCE-9994-642DFC87B076}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7242BF60-82E6-4FCE-9994-642DFC87B076}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{8CF22AE4-1EA7-4DC8-8DB8-4FF9B5853F1E} = {D96E3964-9318-489E-B854-63E9590C90E8}
+		{7242BF60-82E6-4FCE-9994-642DFC87B076} = {440B0BBF-2644-4135-8592-A7F0DE78C64C}
+	EndGlobalSection
+EndGlobal

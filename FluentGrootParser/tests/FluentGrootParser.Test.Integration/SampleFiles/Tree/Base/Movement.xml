@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root BTCPP_format="4">
+  <BehaviorTree ID="AdvanceWaypoint">
+    <Sequence>
+      <Inverter>
+        <HasNoWaypoints/>
+      </Inverter>
+      <WaypointReached/>
+      <Fallback>
+        <Sequence>
+          <WaypointEndpointReached/>
+          <StopWalking/>
+        </Sequence>
+        <DoAdvanceWaypoint/>
+      </Fallback>
+    </Sequence>
+  </BehaviorTree>
+
+  <BehaviorTree ID="MovementRoot">
+    <Fallback>
+      <SubTree ID="ReachWaypoint"/>
+      <SubTree ID="AdvanceWaypoint"/>
+    </Fallback>
+  </BehaviorTree>
+
+  <BehaviorTree ID="RandomJump">
+    <Sequence>
+      <DistanceToWaypointBiggerThan distance="5"/>
+      <LastJoinLongerAgoThanRandomized baseMs="800"
+                                       rndMsRange="800"/>
+      <PressKeyKeepWalking keyName="KeyJump"/>
+    </Sequence>
+  </BehaviorTree>
+
+  <BehaviorTree ID="ReachWaypoint">
+    <Sequence>
+      <Inverter>
+        <HasNoWaypoints/>
+      </Inverter>
+      <Inverter>
+        <WaypointReached/>
+      </Inverter>
+      <Parallel failure_count="1"
+                success_count="-1">
+        <Walk/>
+        <SubTree ID="RandomJump"/>
+      </Parallel>
+    </Sequence>
+  </BehaviorTree>
+
+  <!-- Description of Node Models (used by Groot) -->
+  <TreeNodesModel>
+    <Condition ID="DistanceToWaypointBiggerThan"
+               editable="true">
+      <input_port name="distance"/>
+    </Condition>
+    <Action ID="DoAdvanceWaypoint"
+            editable="true"/>
+    <Condition ID="HasNoWaypoints"
+               editable="true"/>
+    <Condition ID="LastJoinLongerAgoThanRandomized"
+               editable="true">
+      <input_port name="baseMs"/>
+      <input_port name="rndMsRange"/>
+    </Condition>
+    <Action ID="PressKeyKeepWalking"
+            editable="true">
+      <input_port name="keyName"/>
+    </Action>
+    <Action ID="StopWalking"
+            editable="true"/>
+    <Action ID="Walk"
+            editable="true"/>
+    <Condition ID="WaypointEndpointReached"
+               editable="true"/>
+    <Condition ID="WaypointReached"
+               editable="true"/>
+  </TreeNodesModel>
+
+</root>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root BTCPP_format="4" project_name="Project">
+    <include path="Base/Movement.xml"/>
+    <include path="Root.xml"/>
+    <!-- Description of Node Models (used by Groot) -->
+    <TreeNodesModel>
+        <Condition ID="DistanceToWaypointBiggerThan" editable="true">
+            <input_port name="distance"/>
+        </Condition>
+        <Action ID="DoAdvanceWaypoint" editable="true"/>
+        <Condition ID="HasNoWaypoints" editable="true"/>
+        <Condition ID="LastJoinLongerAgoThanRandomized" editable="true">
+            <input_port name="baseMs"/>
+            <input_port name="rndMsRange"/>
+        </Condition>
+        <Action ID="PressKeyKeepWalking" editable="true">
+            <input_port name="keyName"/>
+        </Action>
+        <Action ID="StopWalking" editable="true"/>
+        <Action ID="Walk" editable="true"/>
+        <Condition ID="WaypointEndpointReached" editable="true"/>
+        <Condition ID="WaypointReached" editable="true"/>
+    </TreeNodesModel>
+</root>
