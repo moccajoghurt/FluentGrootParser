@@ -8,14 +8,17 @@ namespace FluentGrootParser.TreeConversion;
 public class TreeConverter : ITreeConverter
 {
     private readonly BehaviourTreeBuilder _builder = new();
-    private Dictionary<Node, Func<BehaviourTreeStatus>> _mappedActions = new();
-    private Dictionary<Node, Func<bool>> _mappedConditions = new();
-    private XDocument _treeDocument = new();
+    private Func<Node, Func<BehaviourTreeStatus>> _mappedActions = null!;
+    private Func<Node, Func<bool>> _mappedConditions = null!;
+    private List<Node> _nodes = null!;
+    private XDocument _treeDocument = null!;
 
     public IBehaviourTreeNode ConvertToTree(List<XDocument> xmlDocuments,
-        Dictionary<Node, Func<BehaviourTreeStatus>> mappedActions,
-        Dictionary<Node, Func<bool>> mappedConditions)
+        List<Node> nodes,
+        Func<Node, Func<BehaviourTreeStatus>> mappedActions,
+        Func<Node, Func<bool>> mappedConditions)
     {
+        _nodes = nodes;
         _mappedActions = mappedActions;
         _mappedConditions = mappedConditions;
         _treeDocument = GetCombinedDoc(xmlDocuments);
@@ -47,7 +50,7 @@ public class TreeConverter : ITreeConverter
                 break;
 
             default:
-                if (!AddActionOrCondition(currentNode.Name.ToString()))
+                if (!AddActionOrCondition(currentNode))
                     throw new InvalidOperationException($"Node {currentNode.Name} not found");
                 break;
         }
@@ -104,34 +107,30 @@ public class TreeConverter : ITreeConverter
         return (numRequiredToFail, numRequiredToSucceed);
     }
 
-    private bool AddActionOrCondition(string name)
+    private bool AddActionOrCondition(XElement node)
     {
-        var action = MapAction(name);
-        if (action != null)
+        var myNode = _nodes.Find(n => n.Name == node.Name.ToString());
+        if (myNode == null) return false;
+        var newNode = new Node
         {
-            _builder.Do(action);
-            return true;
+            Name = myNode.Name,
+            Type = myNode.Type
+        };
+        if (myNode.Params != null)
+        {
+            var newParameters = myNode.Params.Select(p =>
+                node.Attribute(p)?.Value ?? throw new InvalidOperationException("Parameter not found")).ToList();
+            newNode.Params = newParameters;
         }
 
-        var condition = MapCondition(name);
-        if (condition == null) return false;
-        _builder.Condition(condition);
+        if (newNode.Type == NodeType.Action)
+            _builder.Do(_mappedActions(newNode));
+        else
+            _builder.Condition(_mappedConditions(newNode));
+
         return true;
     }
 
-    private Func<BehaviourTreeStatus>? MapAction(string nodeName)
-    {
-        return _mappedActions.All(n => n.Key.Name != nodeName)
-            ? null
-            : _mappedActions.First(n => n.Key.Name == nodeName).Value;
-    }
-
-    private Func<bool>? MapCondition(string nodeName)
-    {
-        return _mappedConditions.All(n => n.Key.Name != nodeName)
-            ? null
-            : _mappedConditions.First(n => n.Key.Name == nodeName).Value;
-    }
 
     private static XDocument GetCombinedDoc(IEnumerable<XDocument> xmlDocuments)
     {

@@ -7,6 +7,7 @@ namespace FluentGrootParser.TreeConversion;
 public interface ITreeConverter
 {
     IBehaviourTreeNode ConvertToTree(List<XDocument> xmlDocuments,
-        Dictionary<Node, Func<BehaviourTreeStatus>> mappedActions,
-        Dictionary<Node, Func<bool>> mappedConditions);
+        List<Node> nodes,
+        Func<Node, Func<BehaviourTreeStatus>> mappedActions,
+        Func<Node, Func<bool>> mappedConditions);
 }

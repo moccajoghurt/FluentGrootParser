@@ -25,9 +25,7 @@ public class FluentGrootParser : IFluentGrootParser
         var xmlFiles = _xmlFileReader.ReadXmlFiles(grootTreePath);
         var projFile = _xmlFileReader.ReadBtProjFile(grootTreePath);
         var nodes = _nodeConverter.GetNodes(projFile);
-        var actions = nodes.Where(n => n.Type == NodeType.Action).ToDictionary(node => node, mapActions);
-        var conditions = nodes.Where(n => n.Type == NodeType.Condition).ToDictionary(node => node, mapConditions);
-        var tree = _treeConverter.ConvertToTree(xmlFiles, actions, conditions);
+        var tree = _treeConverter.ConvertToTree(xmlFiles, nodes, mapActions, mapConditions);
 
         return tree;
     }

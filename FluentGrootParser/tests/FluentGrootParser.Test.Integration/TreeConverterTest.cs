@@ -35,14 +35,14 @@ public class TreeConverterTest
             "WaypointReached"
         };
         // Act
-        var tree = parser?.ConvertToTree(path, MapAction, MapCondition);
+        var tree = parser?.ConvertToTree(path, MapActions, MapConditions);
         tree?.Tick();
         // Assert
         Assert.NotNull(tree);
         Assert.True(expectedOrder.SequenceEqual(_actionOrder));
     }
 
-    private Func<BehaviourTreeStatus> MapAction(Node node)
+    private Func<BehaviourTreeStatus> MapActions(Node node)
     {
         return () =>
         {
@@ -51,7 +51,7 @@ public class TreeConverterTest
         };
     }
 
-    private Func<bool> MapCondition(Node node)
+    private Func<bool> MapConditions(Node node)
     {
         return () =>
         {
