@@ -6,6 +6,6 @@ namespace FluentGrootParser.Services;
 public interface IFluentGrootParser
 {
     IBehaviourTreeNode ConvertToTree(string grootTreePath,
-        Func<Node, Func<List<string>, BehaviourTreeStatus>> mapActions,
-        Func<Node, Func<List<string>, bool>> mapConditions);
+        Func<Node, Func<BehaviourTreeStatus>> mapActions,
+        Func<Node, Func<bool>> mapConditions);
 }

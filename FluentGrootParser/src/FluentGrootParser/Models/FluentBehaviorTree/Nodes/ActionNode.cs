@@ -2,14 +2,14 @@
 
 public class ActionNode : IBehaviourTreeNode
 {
-    private readonly Func<List<string>, BehaviourTreeStatus> _fn;
-    public ActionNode(Func<List<string>, BehaviourTreeStatus> fn)
+    private readonly Func<BehaviourTreeStatus> _fn;
+    public ActionNode(Func<BehaviourTreeStatus> fn)
     {
         _fn = fn;
     }
 
-    public BehaviourTreeStatus Tick(List<string> parameters)
+    public BehaviourTreeStatus Tick()
     {
-        return _fn(parameters);
+        return _fn();
     }
 }

@@ -8,9 +8,9 @@ namespace FluentGrootParser.Test.Integration;
 
 public class TreeConverterTest
 {
+    private readonly List<string> _actionOrder;
     private readonly ServiceCollection _serviceCollection = new();
     private readonly IServiceProvider _serviceProvider;
-    private readonly List<string> _actionOrder;
 
     public TreeConverterTest()
     {
@@ -36,24 +36,24 @@ public class TreeConverterTest
         };
         // Act
         var tree = parser?.ConvertToTree(path, MapAction, MapCondition);
-        tree?.Tick(new List<string>());
+        tree?.Tick();
         // Assert
         Assert.NotNull(tree);
         Assert.True(expectedOrder.SequenceEqual(_actionOrder));
     }
 
-    private Func<List<string>, BehaviourTreeStatus> MapAction(Node node)
+    private Func<BehaviourTreeStatus> MapAction(Node node)
     {
-        return _ =>
+        return () =>
         {
             _actionOrder.Add(node.Name);
             return BehaviourTreeStatus.Success;
         };
     }
 
-    private Func<List<string>, bool> MapCondition(Node node)
+    private Func<bool> MapCondition(Node node)
     {
-        return _ =>
+        return () =>
         {
             _actionOrder.Add(node.Name);
             return false;

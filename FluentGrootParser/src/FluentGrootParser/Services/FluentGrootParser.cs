@@ -19,8 +19,8 @@ public class FluentGrootParser : IFluentGrootParser
     }
 
     public IBehaviourTreeNode ConvertToTree(string grootTreePath,
-        Func<Node, Func<List<string>, BehaviourTreeStatus>> mapActions,
-        Func<Node, Func<List<string>, bool>> mapConditions)
+        Func<Node, Func<BehaviourTreeStatus>> mapActions,
+        Func<Node, Func<bool>> mapConditions)
     {
         var xmlFiles = _xmlFileReader.ReadXmlFiles(grootTreePath);
         var projFile = _xmlFileReader.ReadBtProjFile(grootTreePath);

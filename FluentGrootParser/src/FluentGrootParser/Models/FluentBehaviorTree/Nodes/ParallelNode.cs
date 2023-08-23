@@ -15,14 +15,14 @@ public class ParallelNode : IParentBehaviourTreeNode
         _numRequiredToSucceed = numRequiredToSucceed;
     }
 
-    public BehaviourTreeStatus Tick(List<string> parameters)
+    public BehaviourTreeStatus Tick()
     {
         var numChildrenSucceeded = 0;
         var numChildrenFailed = 0;
 
         foreach (var child in _children)
         {
-            var childStatus = child.Tick(parameters);
+            var childStatus = child.Tick();
             switch (childStatus)
             {
                 case BehaviourTreeStatus.Success:

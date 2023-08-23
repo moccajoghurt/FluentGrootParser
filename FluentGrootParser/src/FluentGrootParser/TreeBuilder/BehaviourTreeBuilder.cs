@@ -9,7 +9,7 @@ public class BehaviourTreeBuilder
 
     private IBehaviourTreeNode? _curNode;
 
-    public BehaviourTreeBuilder Do(Func<List<string>, BehaviourTreeStatus> fn)
+    public BehaviourTreeBuilder Do(Func<BehaviourTreeStatus> fn)
     {
         if (_parentNodeStack.Count <= 0)
             throw new InvalidOperationException("Can't create an unnested ActionNode, it must be a leaf node.");
@@ -19,9 +19,9 @@ public class BehaviourTreeBuilder
         return this;
     }
 
-    public BehaviourTreeBuilder Condition(Func<List<string>, bool> fn)
+    public BehaviourTreeBuilder Condition(Func<bool> fn)
     {
-        return Do(t => fn(t) ? BehaviourTreeStatus.Success : BehaviourTreeStatus.Failure);
+        return Do(() => fn() ? BehaviourTreeStatus.Success : BehaviourTreeStatus.Failure);
     }
 
     public BehaviourTreeBuilder Inverter()

@@ -2,5 +2,5 @@
 
 public interface IBehaviourTreeNode
 {
-    BehaviourTreeStatus Tick(List<string> parameters);
+    BehaviourTreeStatus Tick();
 }

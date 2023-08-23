@@ -8,13 +8,13 @@ namespace FluentGrootParser.TreeConversion;
 public class TreeConverter : ITreeConverter
 {
     private readonly BehaviourTreeBuilder _builder = new();
-    private Dictionary<Node, Func<List<string>, BehaviourTreeStatus>> _mappedActions = new();
-    private Dictionary<Node, Func<List<string>, bool>> _mappedConditions = new();
+    private Dictionary<Node, Func<BehaviourTreeStatus>> _mappedActions = new();
+    private Dictionary<Node, Func<bool>> _mappedConditions = new();
     private XDocument _treeDocument = new();
 
     public IBehaviourTreeNode ConvertToTree(List<XDocument> xmlDocuments,
-        Dictionary<Node, Func<List<string>, BehaviourTreeStatus>> mappedActions,
-        Dictionary<Node, Func<List<string>, bool>> mappedConditions)
+        Dictionary<Node, Func<BehaviourTreeStatus>> mappedActions,
+        Dictionary<Node, Func<bool>> mappedConditions)
     {
         _mappedActions = mappedActions;
         _mappedConditions = mappedConditions;
@@ -117,17 +117,16 @@ public class TreeConverter : ITreeConverter
         if (condition == null) return false;
         _builder.Condition(condition);
         return true;
-
     }
 
-    private Func<List<string>, BehaviourTreeStatus>? MapAction(string nodeName)
+    private Func<BehaviourTreeStatus>? MapAction(string nodeName)
     {
         return _mappedActions.All(n => n.Key.Name != nodeName)
             ? null
             : _mappedActions.First(n => n.Key.Name == nodeName).Value;
     }
 
-    private Func<List<string>, bool>? MapCondition(string nodeName)
+    private Func<bool>? MapCondition(string nodeName)
     {
         return _mappedConditions.All(n => n.Key.Name != nodeName)
             ? null

@@ -4,11 +4,11 @@ public class InverterNode : IParentBehaviourTreeNode
 {
     private IBehaviourTreeNode? _childNode;
 
-    public BehaviourTreeStatus Tick(List<string> parameters)
+    public BehaviourTreeStatus Tick()
     {
         if (_childNode == null) throw new InvalidOperationException("InverterNode must have a child node!");
 
-        var result = _childNode.Tick(parameters);
+        var result = _childNode.Tick();
         if (result == BehaviourTreeStatus.Failure)
             return BehaviourTreeStatus.Success;
         if (result == BehaviourTreeStatus.Success)

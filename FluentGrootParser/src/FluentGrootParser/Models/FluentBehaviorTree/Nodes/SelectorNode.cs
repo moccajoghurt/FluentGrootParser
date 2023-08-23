@@ -4,11 +4,11 @@ public class SelectorNode : IParentBehaviourTreeNode
 {
     private readonly List<IBehaviourTreeNode> _children = new();
 
-    public BehaviourTreeStatus Tick(List<string> parameters)
+    public BehaviourTreeStatus Tick()
     {
         foreach (var child in _children)
         {
-            var childStatus = child.Tick(parameters);
+            var childStatus = child.Tick();
             if (childStatus != BehaviourTreeStatus.Failure) return childStatus;
         }
 
