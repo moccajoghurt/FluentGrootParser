@@ -6,13 +6,13 @@ using Xunit;
 
 namespace FluentGrootParser.Test.Integration;
 
-public class TreeConverterTest
+public class FluentGrootParserTest
 {
     private readonly List<string> _actionOrder;
     private readonly ServiceCollection _serviceCollection = new();
     private readonly IServiceProvider _serviceProvider;
 
-    public TreeConverterTest()
+    public FluentGrootParserTest()
     {
         _serviceCollection.AddFluentGrootParser();
         _serviceProvider = _serviceCollection.BuildServiceProvider();
@@ -40,6 +40,33 @@ public class TreeConverterTest
         // Assert
         Assert.NotNull(tree);
         Assert.True(expectedOrder.SequenceEqual(_actionOrder));
+    }
+
+    [Fact]
+    public void GetAllNodes_ReturnsAllNodes()
+    {
+        // Arrange
+        var expectedNodes = new List<string>
+        {
+            "DistanceToWaypointBiggerThan",
+            "DoAdvanceWaypoint",
+            "HasNoWaypoints",
+            "LastJoinLongerAgoThanRandomized",
+            "PressKeyKeepWalking",
+            "StopWalking",
+            "Walk",
+            "WaypointEndpointReached",
+            "WaypointReached"
+        };
+        var parser = _serviceProvider.GetService<IFluentGrootParser>();
+        var path = Path.Combine(Directory.GetCurrentDirectory(), "../../../SampleFiles");
+        parser?.ConvertToTree(path, MapActions, MapConditions);
+        // Act
+        var nodes = parser?.GetAllTreeNodes();
+        // Assert
+        var nodeNames = nodes?.Select(n => n.Name).ToList();
+        Assert.NotNull(nodeNames);
+        Assert.True(expectedNodes.TrueForAll(expectedNode => nodeNames.Contains(expectedNode)));
     }
 
     private Func<BehaviourTreeStatus> MapActions(Node node)
