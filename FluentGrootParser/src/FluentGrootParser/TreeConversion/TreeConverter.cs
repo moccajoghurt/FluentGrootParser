@@ -118,9 +118,9 @@ public class TreeConverter : ITreeConverter
         };
         if (myNode.Params != null)
         {
-            var newParameters = myNode.Params.Select(p =>
-                node.Attribute(p)?.Value ?? throw new InvalidOperationException("Parameter not found")).ToList();
-            newNode.Params = newParameters;
+            newNode.Params = node.Attributes()
+                .Where(attr => myNode.Params.ContainsKey(attr.Name.ToString()))
+                .ToDictionary(attr => attr.Name.ToString(), attr => attr.Value);
         }
 
         if (newNode.Type == NodeType.Action)

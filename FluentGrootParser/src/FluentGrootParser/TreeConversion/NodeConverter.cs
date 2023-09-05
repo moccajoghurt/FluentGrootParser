@@ -23,8 +23,7 @@ public class NodeConverter : INodeConverter
             var actionParams = actionElement.Descendants("input_port")
                 .Select(p => p.Attribute("name"))
                 .Where(attr => attr != null)
-                .Select(attr => attr!.Value)
-                .ToList();
+                .ToDictionary(attr => attr!.Value, _ => "");
 
             var node = new Node
             {
