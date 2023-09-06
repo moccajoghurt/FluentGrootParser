@@ -21,9 +21,13 @@ public class NodeConverter : INodeConverter
         foreach (var actionElement in actionElements)
         {
             var actionParams = actionElement.Descendants("input_port")
-                .Select(p => p.Attribute("name"))
-                .Where(attr => attr != null)
-                .ToDictionary(attr => attr!.Value, _ => "");
+                .Select(p => new
+                {
+                    Name = p.Attribute("name")?.Value,
+                    DefaultValue = p.Attribute("default")?.Value ?? ""
+                })
+                .Where(attr => attr.Name != null)
+                .ToDictionary(attr => attr.Name!, attr => attr.DefaultValue);
 
             var node = new Node
             {

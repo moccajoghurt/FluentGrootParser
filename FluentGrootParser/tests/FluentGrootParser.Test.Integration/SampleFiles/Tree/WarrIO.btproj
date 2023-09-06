@@ -17,7 +17,9 @@
             <input_port name="keyName"/>
         </Action>
         <Action ID="StopWalking" editable="true"/>
-        <Action ID="Walk" editable="true"/>
+        <Action ID="Walk" editable="true">
+            <input_port name="speed" default="7"/>
+        </Action>
         <Condition ID="WaypointEndpointReached" editable="true"/>
         <Condition ID="WaypointReached" editable="true"/>
     </TreeNodesModel>

@@ -125,14 +125,23 @@ public class TreeConverter : ITreeConverter
             Type = myNode.Type
         };
         if (myNode.Params != null)
+        {
+            // fill in the parameters
             newNode.Params = node.Attributes()
                 .Where(attr => myNode.Params.ContainsKey(attr.Name.ToString()))
                 .ToDictionary(attr => attr.Name.ToString(), attr =>
                 {
+                    // if the parameter is a reference to a subtree parameter, replace it with the value
                     if (attr.Value.StartsWith('{') && attr.Value.EndsWith('}'))
                         return _currentSubTreeParameters[attr.Value.Substring(1, attr.Value.Length - 2)];
                     return attr.Value;
                 });
+            // add the default values for the parameters that are not specified or where the value is empty
+            foreach (var param in myNode.Params)
+                if (!newNode.Params.ContainsKey(param.Key) || string.IsNullOrEmpty(newNode.Params[param.Key]))
+                    newNode.Params[param.Key] = param.Value;
+        }
+
 
         if (newNode.Type == NodeType.Action)
             _builder.Do(_mappedActions(newNode));

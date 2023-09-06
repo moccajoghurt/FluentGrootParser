@@ -90,7 +90,29 @@ public class FluentGrootParserTest
         // Act
         var tree = parser?.ConvertToTree(path, MapActions, Conditions);
         tree?.Tick();
+    }
 
+    [Fact]
+    public void HasDefaultParameter_ParameterIsUsed()
+    {
+        // Arrange
+        Func<BehaviourTreeStatus> Actions(Node node) =>
+            () =>
+            {
+                if (node.Name == "Walk")
+                {
+                    // Assert
+                    Assert.Equal("7", node.Params?["speed"]);
+                }
+
+                return BehaviourTreeStatus.Success;
+            };
+
+        var parser = _serviceProvider.GetService<IFluentGrootParser>();
+        var path = Path.Combine(Directory.GetCurrentDirectory(), "../../../SampleFiles");
+        // Act
+        var tree = parser?.ConvertToTree(path, Actions, MapConditions);
+        tree?.Tick();
     }
 
     private Func<BehaviourTreeStatus> MapActions(Node node)
