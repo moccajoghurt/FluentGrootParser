@@ -8,6 +8,7 @@ namespace FluentGrootParser.TreeConversion;
 public class TreeConverter : ITreeConverter
 {
     private readonly BehaviourTreeBuilder _builder = new();
+    private Dictionary<string, string> _currentSubTreeParameters = new();
     private Func<Node, Func<BehaviourTreeStatus>> _mappedActions = null!;
     private Func<Node, Func<bool>> _mappedConditions = null!;
     private List<Node> _nodes = null!;
@@ -79,11 +80,18 @@ public class TreeConverter : ITreeConverter
 
     private void ProcessSubTree(XElement node)
     {
+        var buf = _currentSubTreeParameters;
+        _currentSubTreeParameters = new Dictionary<string, string>();
+        foreach (var attr in node.Attributes())
+            _currentSubTreeParameters.Add(attr.Name.ToString(), attr.Value);
+
         var subTreeId = node.Attribute("ID")?.Value;
         var subTreeElement = _treeDocument.Root?.Elements("BehaviorTree")
             .FirstOrDefault(e => e.Attribute("ID")?.Value == subTreeId);
         if (subTreeElement != null)
             BuildBehaviourTree(subTreeElement);
+
+        _currentSubTreeParameters = buf;
     }
 
     private void ProcessParallelNode(XElement node)
@@ -117,11 +125,14 @@ public class TreeConverter : ITreeConverter
             Type = myNode.Type
         };
         if (myNode.Params != null)
-        {
             newNode.Params = node.Attributes()
                 .Where(attr => myNode.Params.ContainsKey(attr.Name.ToString()))
-                .ToDictionary(attr => attr.Name.ToString(), attr => attr.Value);
-        }
+                .ToDictionary(attr => attr.Name.ToString(), attr =>
+                {
+                    if (attr.Value.StartsWith('{') && attr.Value.EndsWith('}'))
+                        return _currentSubTreeParameters[attr.Value.Substring(1, attr.Value.Length - 2)];
+                    return attr.Value;
+                });
 
         if (newNode.Type == NodeType.Action)
             _builder.Do(_mappedActions(newNode));

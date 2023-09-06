@@ -18,14 +18,15 @@
 
   <BehaviorTree ID="MovementRoot">
     <Fallback>
-      <SubTree ID="ReachWaypoint"/>
+      <SubTree ID="ReachWaypoint"
+               _autoremap="false"/>
       <SubTree ID="AdvanceWaypoint"/>
     </Fallback>
   </BehaviorTree>
 
   <BehaviorTree ID="RandomJump">
     <Sequence>
-      <DistanceToWaypointBiggerThan distance="5"/>
+      <DistanceToWaypointBiggerThan distance="{distance}"/>
       <LastJoinLongerAgoThanRandomized baseMs="800"
                                        rndMsRange="800"/>
       <PressKeyKeepWalking keyName="KeyJump"/>
@@ -43,7 +44,8 @@
       <Parallel failure_count="1"
                 success_count="-1">
         <Walk/>
-        <SubTree ID="RandomJump"/>
+        <SubTree ID="RandomJump"
+                 distance="13"/>
       </Parallel>
     </Sequence>
   </BehaviorTree>

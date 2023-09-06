@@ -69,6 +69,30 @@ public class FluentGrootParserTest
         Assert.True(expectedNodes.TrueForAll(expectedNode => nodeNames.Contains(expectedNode)));
     }
 
+    [Fact]
+    public void SubtreeHasParameters_ChildNodesUseParameters()
+    {
+        // Arrange
+        Func<bool> Conditions(Node node) =>
+            () =>
+            {
+                if (node.Name == "DistanceToWaypointBiggerThan")
+                {
+                    // Assert
+                    Assert.Equal("13", node.Params?["distance"]);
+                }
+
+                return false;
+            };
+
+        var parser = _serviceProvider.GetService<IFluentGrootParser>();
+        var path = Path.Combine(Directory.GetCurrentDirectory(), "../../../SampleFiles");
+        // Act
+        var tree = parser?.ConvertToTree(path, MapActions, Conditions);
+        tree?.Tick();
+
+    }
+
     private Func<BehaviourTreeStatus> MapActions(Node node)
     {
         return () =>
