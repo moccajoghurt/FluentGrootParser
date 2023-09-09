@@ -80,10 +80,23 @@ public class TreeConverter : ITreeConverter
 
     private void ProcessSubTree(XElement node)
     {
+        // Use placeholder parameters
         var buf = _currentSubTreeParameters;
         _currentSubTreeParameters = new Dictionary<string, string>();
         foreach (var attr in node.Attributes())
-            _currentSubTreeParameters.Add(attr.Name.ToString(), attr.Value);
+        {
+            // If the subtree has placeholder parameters, take the values from the parent tree
+            if (attr.Value.StartsWith('{') && attr.Value.EndsWith('}'))
+            {
+                var parentKey = attr.Value.Trim('{', '}');
+                var currentKey = attr.Name.ToString();
+                _currentSubTreeParameters.Add(currentKey, buf[parentKey]);
+            }
+            else
+            {
+                _currentSubTreeParameters.Add(attr.Name.ToString(), attr.Value);
+            }
+        }
 
         var subTreeId = node.Attribute("ID")?.Value;
         var subTreeElement = _treeDocument.Root?.Elements("BehaviorTree")
@@ -133,7 +146,7 @@ public class TreeConverter : ITreeConverter
                 {
                     // if the parameter is a reference to a subtree parameter, replace it with the value
                     if (attr.Value.StartsWith('{') && attr.Value.EndsWith('}'))
-                        return _currentSubTreeParameters[attr.Value.Substring(1, attr.Value.Length - 2)];
+                        return _currentSubTreeParameters[attr.Value.Trim('{', '}')];
                     return attr.Value;
                 });
             // add the default values for the parameters that are not specified or where the value is empty

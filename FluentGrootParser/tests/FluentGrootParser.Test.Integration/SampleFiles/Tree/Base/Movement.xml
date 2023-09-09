@@ -19,6 +19,7 @@
   <BehaviorTree ID="MovementRoot">
     <Fallback>
       <SubTree ID="ReachWaypoint"
+               distance="16"
                _autoremap="false"/>
       <SubTree ID="AdvanceWaypoint"/>
     </Fallback>
@@ -43,9 +44,9 @@
       </Inverter>
       <Parallel failure_count="1"
                 success_count="-1">
-        <Walk/>
+        <Walk speed="7"/>
         <SubTree ID="RandomJump"
-                 distance="13"/>
+                 distance="{distance}"/>
       </Parallel>
     </Sequence>
   </BehaviorTree>
@@ -72,7 +73,10 @@
     <Action ID="StopWalking"
             editable="true"/>
     <Action ID="Walk"
-            editable="true"/>
+            editable="true">
+      <input_port name="speed"
+                  default="7"/>
+    </Action>
     <Condition ID="WaypointEndpointReached"
                editable="true"/>
     <Condition ID="WaypointReached"

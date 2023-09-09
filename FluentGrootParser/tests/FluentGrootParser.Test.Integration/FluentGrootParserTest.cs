@@ -79,7 +79,7 @@ public class FluentGrootParserTest
                 if (node.Name == "DistanceToWaypointBiggerThan")
                 {
                     // Assert
-                    Assert.Equal("13", node.Params?["distance"]);
+                    Assert.Equal("16", node.Params?["distance"]);
                 }
 
                 return false;
