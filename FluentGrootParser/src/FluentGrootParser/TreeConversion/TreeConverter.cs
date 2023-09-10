@@ -84,7 +84,6 @@ public class TreeConverter : ITreeConverter
         var buf = _currentSubTreeParameters;
         _currentSubTreeParameters = new Dictionary<string, string>();
         foreach (var attr in node.Attributes())
-        {
             // If the subtree has placeholder parameters, take the values from the parent tree
             if (attr.Value.StartsWith('{') && attr.Value.EndsWith('}'))
             {
@@ -96,7 +95,6 @@ public class TreeConverter : ITreeConverter
             {
                 _currentSubTreeParameters.Add(attr.Name.ToString(), attr.Value);
             }
-        }
 
         var subTreeId = node.Attribute("ID")?.Value;
         var subTreeElement = _treeDocument.Root?.Elements("BehaviorTree")
@@ -139,22 +137,23 @@ public class TreeConverter : ITreeConverter
         };
         if (myNode.Params != null)
         {
-            // fill in the parameters
-            newNode.Params = node.Attributes()
-                .Where(attr => myNode.Params.ContainsKey(attr.Name.ToString()))
-                .ToDictionary(attr => attr.Name.ToString(), attr =>
+            // Fill in the parameters and add default values if not specified or empty
+            newNode.Params = myNode.Params.ToDictionary(
+                param => param.Key,
+                param =>
                 {
-                    // if the parameter is a reference to a subtree parameter, replace it with the value
-                    if (attr.Value.StartsWith('{') && attr.Value.EndsWith('}'))
-                        return _currentSubTreeParameters[attr.Value.Trim('{', '}')];
-                    return attr.Value;
-                });
-            // add the default values for the parameters that are not specified or where the value is empty
-            foreach (var param in myNode.Params)
-                if (!newNode.Params.ContainsKey(param.Key) || string.IsNullOrEmpty(newNode.Params[param.Key]))
-                    newNode.Params[param.Key] = param.Value;
-        }
+                    var attrValue = node.Attributes().FirstOrDefault(attr => attr.Name.ToString() == param.Key)?.Value;
+                    return string.IsNullOrEmpty(attrValue) ? param.Value : attrValue;
+                }
+            );
 
+            // Insert placeholder parameters
+            foreach (var param in newNode.Params.Where(p => p.Value.StartsWith('{') && p.Value.EndsWith('}')).ToList())
+            {
+                var key = param.Value.Trim('{', '}');
+                newNode.Params[param.Key] = _currentSubTreeParameters[key];
+            }
+        }
 
         if (newNode.Type == NodeType.Action)
             _builder.Do(_mappedActions(newNode));
