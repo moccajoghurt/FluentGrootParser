@@ -96,6 +96,9 @@ public class TreeConverter : ITreeConverter
                 _currentSubTreeParameters.Add(attr.Name.ToString(), attr.Value);
             }
 
+        if (buf.TryGetValue("ID", out var parentName))
+            _currentSubTreeParameters["ID"] = parentName + " " + _currentSubTreeParameters["ID"];
+
         var subTreeId = node.Attribute("ID")?.Value;
         var subTreeElement = _treeDocument.Root?.Elements("BehaviorTree")
             .FirstOrDefault(e => e.Attribute("ID")?.Value == subTreeId);
