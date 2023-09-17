@@ -130,10 +130,12 @@ public class TreeConverter : ITreeConverter
     {
         var myNode = _nodes.Find(n => n.Name == node.Name.ToString());
         if (myNode == null) return false;
+        var hasParent = _currentSubTreeParameters.TryGetValue("ID", out var parentName);
         var newNode = new Node
         {
             Name = myNode.Name,
-            Type = myNode.Type
+            Type = myNode.Type,
+            ParentName = hasParent ? parentName! : ""
         };
         if (myNode.Params != null)
         {
